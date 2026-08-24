@@ -57,11 +57,16 @@
 <div class="container">
     <h1 id="video-title">Моё видео в Mini App</h1>
     
-    <!-- Замените ссылку в src на прямую ссылку на ваше видео (mp4) -->
-    <video id="my-video" controls poster="https://unsplash.com">
-        <source src="https://matreshka.tv/video/kAJg0G3gwwY?s=aa" type="video/mp4">
-        Ваш браузер не поддерживает встроенный плеер.
-    </video>
+    <!-- Встраиваем официальный плеер Матрёшка ТВ -->
+<iframe 
+    src="https://matreshka.tv" 
+    width="100%" 
+    height="315" 
+    frameborder="0" 
+    allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
+    allowfullscreen
+    style="border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+</iframe>
 
     <!-- Отображение просмотров -->
     <div class="stats">

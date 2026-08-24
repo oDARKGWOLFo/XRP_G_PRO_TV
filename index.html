@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
-    <!-- Подключаем Telegram API -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -18,42 +17,56 @@
             justify-content: center;
             min-height: 90vh;
             text-align: center;
+            padding: 20px;
         }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            transition: transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        p {
+            font-size: 16px;
+            color: #ccc;
         }
     </style>
 </head>
 <body>
 
-    <div class="loader"></div>
-    <p>Перенаправление на Матрёшка ТВ...<br><small style="color: #888;">Видео откроется в браузере смартфона</small></p>
+    <h2>XRP G PRO TV</h2>
+    <p>Нажмите на кнопку ниже, чтобы запустить видео на платформе Матрёшка ТВ и поддержать автора просмотром!</p>
+
+    <!-- Большая удобная кнопка для обхода блокировок -->
+    <button class="btn" id="watch-btn">▶ СМОТРЕТЬ ВИДЕО</button>
 
     <script>
-        // Инициализируем Telegram
         const tg = window.Telegram.WebApp;
         tg.ready();
+        tg.expand();
 
-        // Ссылка на ваше видео для начисления просмотров
         const targetVideoUrl = "https://matreshka.tv";
 
-        // Запуск перенаправления во внешний браузер смартфона
-        tg.openLink(targetVideoUrl);
-
-        // Закрываем шторку Mini App через секунду, чтобы она не оставалась пустой
-        setTimeout(() => {
-            tg.close();
-        }, 1000);
+        // Перенаправление сработает ТОЛЬКО по клику пользователя, что обойдет зависание
+        document.getElementById('watch-btn').addEventListener('click', function() {
+            tg.openLink(targetVideoUrl);
+            
+            // Даем пользователю полсекунды, чтобы браузер успел подхватить ссылку, и закрываем шторку
+            setTimeout(() => {
+                tg.close();
+            }, 500);
+        });
     </script>
 
 </body>

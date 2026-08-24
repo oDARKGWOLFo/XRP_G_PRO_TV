@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Video Mini App</title>
+    <!-- Подключаем официальный скрипт Telegram -->
+    <script src="https://telegram.org"></script>
+    <style>
+        /* Настраиваем дизайн под цвета Telegram пользователя */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        /* Стиль для плеера */
+        video {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #000;
+        }
+
+        /* Виджет счетчика просмотров */
+        .stats {
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #707579);
+            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="video-title">Моё видео в Mini App</h1>
+    
+    <!-- Замените ссылку в src на прямую ссылку на ваше видео (mp4) -->
+    <video id="my-video" controls poster="https://unsplash.com">
+        <source src="https://googleapis.com" type="video/mp4">
+        Ваш браузер не поддерживает встроенный плеер.
+    </video>
+
+    <!-- Отображение просмотров -->
+    <div class="stats">
+        👁 Просмотров внутри Telegram: <span id="view-count">0</span>
+    </div>
+</div>
+
+<script>
+    // 1. Инициализируем Telegram Web App
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand(); // Разворачиваем шторку на максимум
+
+    // 2. Логика счетчика просмотров
+    const video = document.getElementById('my-video');
+    const viewCountElement = document.getElementById('view-count');
+
+    // Получаем текущие просмотры из памяти (пока используем локальную память браузера)
+    let currentViews = localStorage.getItem('local_video_views') || 0;
+    viewCountElement.innerText = currentViews;
+
+    // Флаг, чтобы просмотр засчитывался только один раз за один запуск видео
+    let viewCounted = false;
+
+    // Как только пользователь нажал Play и видео пошло
+    video.addEventListener('play', function() {
+        if (!viewCounted) {
+            currentViews++;
+            localStorage.setItem('local_video_views', currentViews);
+            viewCountElement.innerText = currentViews;
+            viewCounted = true; // Защита от повторного засчитывания при паузе
+
+            // Звуковой отклик от Telegram (вибрация), что просмотр засчитан
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred('success');
+            }
+        }
+    });
+
+    // Если видео закончилось, разрешаем засчитать просмотр при следующем включении
+    video.addEventListener('ended', function() {
+        viewCounted = false;
+    });
+</script>
+
+</body>
+</html>

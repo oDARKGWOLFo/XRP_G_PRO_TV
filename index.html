@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
-    <!-- Официальный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -20,6 +19,7 @@
             text-align: center;
             padding: 20px;
         }
+        /* Превращаем ссылку в красивую кнопку */
         .btn {
             background-color: #3498db;
             color: white;
@@ -31,6 +31,8 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
             transition: transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
             margin-top: 20px;
         }
         .btn:active {
@@ -45,27 +47,21 @@
 <body>
 
     <h2>XRP G PRO TV</h2>
-    <p>Нажмите на кнопку ниже, чтобы запустить видео внутри встроенного плеера Telegram!</p>
+    <p>Нажмите на кнопку ниже, чтобы запустить видео во внутреннем браузере Telegram!</p>
 
-    <!-- Обычная кнопка, которая теперь будет обрабатываться скриптом правильно -->
-    <button class="btn" id="watch-button">▶ СМОТРЕТЬ В TELEGRAM</button>
+    <!-- Используем внутренний протокол tg://link, который принудительно открывает встроенный браузер Telegram вместо Chrome -->
+    <a href="https://t.me" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
 
     <script>
-        // Инициализируем Telegram Web App API
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        const targetVideoUrl = "https://matreshka.tv";
-
-        document.getElementById('watch-button').addEventListener('click', function() {
-            // Классический проверенный метод с флагом встроенного браузера
-            tg.openLink(targetVideoUrl, {try_instant_view: true});
-            
-            // Закрываем шторку Mini App, пока грузится встроенное видео
+        // Закрываем шторку Mini App сразу после клика по ссылке
+        document.getElementById('watch-link').addEventListener('click', function() {
             setTimeout(() => {
                 tg.close();
-            }, 600);
+            }, 500);
         });
     </script>
 

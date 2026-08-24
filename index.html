@@ -19,6 +19,7 @@
             text-align: center;
             padding: 20px;
         }
+        /* Оформляем обычную ссылку как красивую кнопку */
         .btn {
             background-color: #3498db;
             color: white;
@@ -30,7 +31,7 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
             transition: transform 0.1s ease;
-            text-decoration: none;
+            text-decoration: none; /* Убираем подчеркивание текста */
             display: inline-block;
             margin-top: 20px;
         }
@@ -48,24 +49,19 @@
     <h2>XRP G PRO TV</h2>
     <p>Нажмите на кнопку ниже, чтобы запустить видео на платформе Матрёшка ТВ и поддержать автора просмотром!</p>
 
-    <!-- Большая удобная кнопка для обхода блокировок -->
-    <button class="btn" id="watch-btn">▶ СМОТРЕТЬ ВИДЕО</button>
+    <!-- Используем тег 'a' вместо 'button' и атрибут target="_blank" — это заставит систему принудительно открыть внешний браузер -->
+    <a href="https://matreshka.tv" target="_blank" class="btn" id="watch-link">▶ СМОТРЕТЬ ВИДЕО</a>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        const targetVideoUrl = "https://matreshka.tv";
-
-        // Перенаправление сработает ТОЛЬКО по клику пользователя, что обойдет зависание
-        document.getElementById('watch-btn').addEventListener('click', function() {
-            tg.openLink(targetVideoUrl);
-            
-            // Даем пользователю полсекунды, чтобы браузер успел подхватить ссылку, и закрываем шторку
+        // Вешаем событие на ссылку: при клике браузер начнет открываться, а шторка Telegram аккуратно закроется
+        document.getElementById('watch-link').addEventListener('click', function() {
             setTimeout(() => {
                 tg.close();
-            }, 500);
+            }, 800); // Закроем Mini App через чуть-чуть, чтобы дать системе подхватить переход
         });
     </script>
 

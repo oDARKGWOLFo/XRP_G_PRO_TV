@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
-    <!-- Подключаем скрипт Telegram -->
+    <!-- Официальный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -45,12 +45,13 @@
 <body>
 
     <h2>XRP G PRO TV</h2>
-    <p>Нажмите на кнопку ниже, чтобы запустить видео прямо внутри Telegram!</p>
+    <p>Нажмите на кнопку ниже, чтобы запустить видео внутри встроенного плеера Telegram!</p>
 
-    <!-- Обычная кнопка -->
+    <!-- Обычная кнопка, которая теперь будет обрабатываться скриптом правильно -->
     <button class="btn" id="watch-button">▶ СМОТРЕТЬ В TELEGRAM</button>
 
     <script>
+        // Инициализируем Telegram Web App API
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -58,18 +59,13 @@
         const targetVideoUrl = "https://matreshka.tv";
 
         document.getElementById('watch-button').addEventListener('click', function() {
-            // Секретная функция: открывает сайт во встроенном браузере самого Telegram, а не в Хроме!
-            if (tg.openInTelegramBrowser) {
-                tg.openInTelegramBrowser(targetVideoUrl);
-            } else {
-                // Если у пользователя старая версия Telegram, откроет как обычно
-                tg.openLink(targetVideoUrl);
-            }
+            // Классический проверенный метод с флагом встроенного браузера
+            tg.openLink(targetVideoUrl, {try_instant_view: true});
             
-            // Закрываем шторку Mini App через секунду
+            // Закрываем шторку Mini App, пока грузится встроенное видео
             setTimeout(() => {
                 tg.close();
-            }, 1000);
+            }, 600);
         });
     </script>
 

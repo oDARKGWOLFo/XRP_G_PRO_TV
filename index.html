@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Video Mini App</title>
-    <!-- Подключаем официальный скрипт Telegram -->
+    <title>XRP_G_PRO_TV</title>
+    <!-- Официальный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     <style>
-        /* Настраиваем дизайн под цвета Telegram пользователя */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: sans-serif;
             background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
             margin: 0;
@@ -20,97 +19,52 @@
             justify-content: center;
             min-height: 90vh;
         }
-
-        .container {
+        .video-box {
             width: 100%;
             max-width: 500px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        /* Стиль для плеера */
-        video {
-            width: 100%;
+            aspect-ratio: 16/9;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             background-color: #000;
         }
-
-        /* Виджет счетчика просмотров */
-        .stats {
-            margin-top: 16px;
-            font-size: 14px;
-            color: var(--tg-theme-hint-color, #707579);
-            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 id="video-title">Моё видео в Mini App</h1>
-    
-    <!-- Встраиваем официальный плеер Матрёшка ТВ -->
-<iframe 
-    src="https://matreshka.tv" 
-    width="100%" 
-    height="315" 
-    frameborder="0" 
-    allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
-    allowfullscreen
-    style="border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-</iframe>
+    <h3 id="title">Загрузка плеера Матрёшка ТВ...</h3>
 
-    <!-- Отображение просмотров -->
-    <div class="stats">
-        👁 Просмотров внутри Telegram: <span id="view-count">0</span>
+    <div class="video-box">
+        <!-- Маскируем запрос через прокси-обертку, чтобы обойти блокировку ERR_TIMED_OUT -->
+        <iframe 
+            id="player"
+            src="https://herokuapp.com" 
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
     </div>
-</div>
 
-<script>
-    // 1. Инициализируем Telegram Web App
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand(); // Разворачиваем шторку на максимум
+    <script>
+        // Инициализация Telegram
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-    // 2. Логика счетчика просмотров
-    const video = document.getElementById('my-video');
-    const viewCountElement = document.getElementById('view-count');
-
-    // Получаем текущие просмотры из памяти (пока используем локальную память браузера)
-    let currentViews = localStorage.getItem('local_video_views') || 0;
-    viewCountElement.innerText = currentViews;
-
-    // Флаг, чтобы просмотр засчитывался только один раз за один запуск видео
-    let viewCounted = false;
-
-    // Как только пользователь нажал Play и видео пошло
-    video.addEventListener('play', function() {
-        if (!viewCounted) {
-            currentViews++;
-            localStorage.setItem('local_video_views', currentViews);
-            viewCountElement.innerText = currentViews;
-            viewCounted = true; // Защита от повторного засчитывания при паузе
-
-            // Звуковой отклик от Telegram (вибрация), что просмотр засчитан
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.notificationOccurred('success');
-            }
-        }
-    });
-
-    // Если видео закончилось, разрешаем засчитать просмотр при следующем включении
-    video.addEventListener('ended', function() {
-        viewCounted = false;
-    });
-</script>
+        // Меняем заголовок после успешного прогруза
+        document.getElementById('player').onload = function() {
+            document.getElementById('title').innerText = "Эксклюзивно в Telegram";
+        };
+    </script>
 
 </body>
 </html>

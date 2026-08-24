@@ -19,7 +19,6 @@
             text-align: center;
             padding: 20px;
         }
-        /* Превращаем ссылку в красивую кнопку */
         .btn {
             background-color: #3498db;
             color: white;
@@ -49,7 +48,7 @@
     <h2>XRP G PRO TV</h2>
     <p>Нажмите на кнопку ниже, чтобы запустить видео во внутреннем браузере Telegram!</p>
 
-    <!-- Используем внутренний протокол tg://link, который принудительно открывает встроенный браузер Telegram вместо Chrome -->
+    <!-- Прямая официальная команда для открытия встроенного браузера Telegram -->
     <a href="https://t.me" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
 
     <script>
@@ -57,11 +56,10 @@
         tg.ready();
         tg.expand();
 
-        // Закрываем шторку Mini App сразу после клика по ссылке
         document.getElementById('watch-link').addEventListener('click', function() {
             setTimeout(() => {
                 tg.close();
-            }, 500);
+            }, 600);
         });
     </script>
 

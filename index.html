@@ -7,13 +7,13 @@
     <!-- Официальный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     <style>
-        /* Делаем страницу кликабельной по всей площади */
-        html, body {
+        /* Превращаем ссылку-контейнер в полноценный полноэкранный блок */
+        .fullscreen-link {
+            text-decoration: none;
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
+            height: 100vh;
             background-color: #0b0b0e;
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             color: #ffffff;
@@ -22,7 +22,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            cursor: pointer; /* Показывает, что на экран можно нажать */
+            box-sizing: border-box;
         }
         .loader {
             border: 4px solid #222;
@@ -40,6 +40,7 @@
         h2 {
             font-size: 20px;
             margin: 0 0 8px 0;
+            font-weight: 600;
         }
         p {
             font-size: 14px;
@@ -49,11 +50,14 @@
         }
     </style>
 </head>
-<body>
+<body style="margin: 0; padding: 0; overflow: hidden; background-color: #0b0b0e;">
 
-    <div class="loader"></div>
-    <h2>XRP G PRO TV</h2>
-    <p>Нажмите в любое место экрана для запуска плеера</p>
+    <!-- Весь экран теперь является ссылкой. Атрибут target="_blank" заставляет Telegram открыть встроенное окно поверх чата -->
+    <a href="https://matreshka.tv" target="_blank" class="fullscreen-link" id="main-clicker">
+        <div class="loader"></div>
+        <h2>XRP G PRO TV</h2>
+        <p>Нажмите в любое место экрана для запуска видео</p>
+    </a>
 
     <script>
         // Инициализируем Telegram Mini App API
@@ -61,25 +65,12 @@
         tg.ready();
         tg.expand();
 
-        const targetVideoUrl = "https://matreshka.tv";
-
-        // Функция запуска видео, которая сработает железно по касанию экрана
-        function startVideo() {
-            try {
-                tg.openLink(targetVideoUrl);
-            } catch (e) {
-                window.location.href = targetVideoUrl;
-            }
-
-            // Закрываем Mini App, уступая место встроенному плееру Telegram
+        // При клике по экрану ссылка сработает нативно, а мы плавно закроем Mini App через секунду
+        document.getElementById('main-clicker').addEventListener('click', function() {
             setTimeout(() => {
                 tg.close();
-            }, 600);
-        }
-
-        // Вешаем запуск на абсолютно любое нажатие по экрану шторки
-        document.body.addEventListener('click', startVideo);
-        document.body.addEventListener('touchstart', startVideo);
+            }, 1000);
+        });
     </script>
 
 </body>

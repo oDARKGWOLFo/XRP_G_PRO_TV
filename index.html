@@ -2,42 +2,58 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XRP_G_PRO_TV</title>
     <!-- Официальный скрипт Telegram -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #111111;
-            color: #ffffff;
+        /* Делаем страницу кликабельной по всей площади */
+        html, body {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0b0b0e;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 90vh;
             text-align: center;
+            cursor: pointer; /* Показывает, что на экран можно нажать */
         }
         .loader {
-            border: 4px solid #f3f3f3;
+            border: 4px solid #222;
             border-top: 4px solid #3498db;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        h2 {
+            font-size: 20px;
+            margin: 0 0 8px 0;
+        }
+        p {
+            font-size: 14px;
+            color: #3498db;
+            margin: 0;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
     <div class="loader"></div>
-    <p>Запуск видеоплеера...<br><small style="color: #888;">Пожалуйста, подождите</small></p>
+    <h2>XRP G PRO TV</h2>
+    <p>Нажмите в любое место экрана для запуска плеера</p>
 
     <script>
         // Инициализируем Telegram Mini App API
@@ -45,21 +61,25 @@
         tg.ready();
         tg.expand();
 
-        // Ссылка на Матрёшка ТВ, где должны копиться просмотры
         const targetVideoUrl = "https://matreshka.tv";
 
-        // Программный вызов встроенного браузера мессенджера (без кликов по кнопкам)
-        try {
-            tg.openLink(targetVideoUrl);
-        } catch (e) {
-            // Резервный метод на случай сбоя API
-            window.location.href = targetVideoUrl;
+        // Функция запуска видео, которая сработает железно по касанию экрана
+        function startVideo() {
+            try {
+                tg.openLink(targetVideoUrl);
+            } catch (e) {
+                window.location.href = targetVideoUrl;
+            }
+
+            // Закрываем Mini App, уступая место встроенному плееру Telegram
+            setTimeout(() => {
+                tg.close();
+            }, 600);
         }
 
-        // Закрываем фоновое Mini App через 1.5 секунды, чтобы дать шторке плеера полностью развернуться
-        setTimeout(() => {
-            tg.close();
-        }, 1500);
+        // Вешаем запуск на абсолютно любое нажатие по экрану шторки
+        document.body.addEventListener('click', startVideo);
+        document.body.addEventListener('touchstart', startVideo);
     </script>
 
 </body>

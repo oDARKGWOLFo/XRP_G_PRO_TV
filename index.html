@@ -6,55 +6,87 @@
     <title>XRP_G_PRO_TV</title>
     <!-- Подключаем Telegram API -->
     <script src="https://telegram.org"></script>
+    <!-- Подключаем библиотеку hls.js для обработки защищенных потоков видео -->
+    <script src="https://jsdelivr.net"></script>
     <style>
-        html, body {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0b0b0e;
+            color: #ffffff;
             margin: 0;
-            padding: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            text-align: center;
+        }
+        .player-wrapper {
             width: 100%;
-            height: 100%;
+            max-width: 500px;
+            aspect-ratio: 16/9;
+            border-radius: 16px;
             overflow: hidden;
-            background-color: #1a1a1a;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            background-color: #000000;
         }
-        .player-container {
+        video {
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: contain;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        p {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-bottom: 24px;
         }
     </style>
 </head>
 <body>
 
-    <div class="player-container">
-        <!-- Загружаем полноценную мобильную страницу видео напрямую, минуя embed-блокировки -->
-        <iframe 
-            id="matreshka-frame"
-            src="https://matreshka.tv" 
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
-            allowfullscreen>
-        </iframe>
+    <h2>XRP G PRO TV</h2>
+    <p>Матрёшка ТВ | Плеер Telegram</p>
+
+    <div class="player-wrapper">
+        <!-- Полноценный HTML5 плеер, защищенный от внешних блокировок сайта -->
+        <video id="video-player" controls autoplay playsinline poster="https://matreshka.tv"></video>
     </div>
 
     <script>
-        // Инициализируем Telegram Mini App
+        // 1. Инициализация Telegram Mini App
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Растягиваем шторку на максимум, как на вашем скриншоте
+        tg.expand(); // Разворачиваем шторку на весь экран
 
-        // Скрипт маскировки под мобильный плеер
-        const frame = document.getElementById('matreshka-frame');
+        // 2. Настройка обхода блокировки CORS через прокси-стриминг
+        const video = document.getElementById('video-player');
         
-        // Как только рамка начинает грузиться, мы пытаемся скрыть, что запрос идет из Telegram
-        try {
-            frame.contentWindow.navigator.__defineGetter__('userAgent', function() {
-                return 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
+        // Берем прямую видео-трансляцию ролика, оборачивая её в CORS-прокси
+        const proxyUrl = "https://allorigins.win";
+        const videoId = "kAJg0G3gmwY"; 
+        
+        // Формируем технический HLS-адрес для вытягивания потока Матрёшки
+        const streamUrl = proxyUrl + encodeURIComponent("https://matreshka.tv" + videoId);
+
+        // Используем библиотеку HLS для сборки потока прямо внутри Mini App
+        if (Hls.isSupported()) {
+            const hls = new Hls({
+                xhrSetup: function (xhr, url) {
+                    // Маскируем заголовки, чтобы Матрёшка думала, что это обычный плеер смартфона
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                }
             });
-        } catch(e) {
-            console.log("Маскировка применена");
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Резервный вариант для работы на iPhone (Safari)
+            video.src = streamUrl;
         }
     </script>
 

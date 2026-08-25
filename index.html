@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
-    <!-- Подключаем Telegram API -->
+    <!-- Официальный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -21,7 +21,7 @@
             padding: 20px;
         }
         .btn {
-            background-color: #2481cc;
+            background-color: #3498db;
             color: white;
             border: none;
             padding: 16px 32px;
@@ -29,7 +29,7 @@
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
             transition: transform 0.1s ease;
             text-decoration: none;
             display: inline-block;
@@ -47,21 +47,21 @@
 <body>
 
     <h2>XRP G PRO TV</h2>
-    <p>Нажмите на кнопку ниже, чтобы запустить видео во встроенной шторке Telegram!</p>
+    <p>Нажмите на кнопку ниже, чтобы запустить видео во встроенном плеере Telegram!</p>
 
-    <!-- Используем специальный формат ссылки t.me/bg_browser_bot, которая заставляет Android открывать встроенный плеер Telegram -->
-    <a href="https://t.me" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
+    <!-- Используем внутренний протокол tg://, который принудительно вызывает встроенный браузер самого Telegram -->
+    <a href="tg://openmessage?url=https://matreshka.tv" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        // Как только пользователь кликнул по кнопке, шторка Mini App закрывается, уступая место встроенному браузеру Telegram
+        // Закрываем шторку Mini App, уступая место встроенному окну просмотра
         document.getElementById('watch-link').addEventListener('click', function() {
             setTimeout(() => {
                 tg.close();
-            }, 600);
+            }, 500);
         });
     </script>
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
     <!-- Официальный скрипт Telegram -->
-    <script src="https://telegram.org"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -18,51 +18,48 @@
             justify-content: center;
             min-height: 90vh;
             text-align: center;
-            padding: 20px;
         }
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
-            transition: transform 0.1s ease;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
-        .btn:active {
-            transform: scale(0.95);
-        }
-        p {
-            font-size: 16px;
-            color: #ccc;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <h2>XRP G PRO TV</h2>
-    <p>Нажмите на кнопку ниже, чтобы запустить видео во встроенном плеере Telegram!</p>
-
-    <!-- Используем внутренний протокол tg://, который принудительно вызывает встроенный браузер самого Telegram -->
-    <a href="tg://openmessage?url=https://matreshka.tv" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
+    <div class="loader"></div>
+    <p>Запуск видеоплеера...<br><small style="color: #888;">Пожалуйста, подождите</small></p>
 
     <script>
+        // Инициализируем Telegram Mini App API
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        // Закрываем шторку Mini App, уступая место встроенному окну просмотра
-        document.getElementById('watch-link').addEventListener('click', function() {
-            setTimeout(() => {
-                tg.close();
-            }, 500);
-        });
+        // Ссылка на Матрёшка ТВ, где должны копиться просмотры
+        const targetVideoUrl = "https://matreshka.tv";
+
+        // Программный вызов встроенного браузера мессенджера (без кликов по кнопкам)
+        try {
+            tg.openLink(targetVideoUrl);
+        } catch (e) {
+            // Резервный метод на случай сбоя API
+            window.location.href = targetVideoUrl;
+        }
+
+        // Закрываем фоновое Mini App через 1.5 секунды, чтобы дать шторке плеера полностью развернуться
+        setTimeout(() => {
+            tg.close();
+        }, 1500);
     </script>
 
 </body>

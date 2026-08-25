@@ -2,92 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP_G_PRO_TV</title>
     <!-- Подключаем Telegram API -->
     <script src="https://telegram.org"></script>
-    <!-- Подключаем библиотеку hls.js для обработки защищенных потоков видео -->
-    <script src="https://jsdelivr.net"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #0b0b0e;
+            background-color: #111111;
             color: #ffffff;
             margin: 0;
-            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 90vh;
             text-align: center;
+            padding: 20px;
         }
-        .player-wrapper {
-            width: 100%;
-            max-width: 500px;
-            aspect-ratio: 16/9;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            background-color: #000000;
+        .btn {
+            background-color: #2481cc;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
+            transition: transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        h2 {
-            font-size: 20px;
-            margin-bottom: 4px;
-            font-weight: 600;
+        .btn:active {
+            transform: scale(0.95);
         }
         p {
-            font-size: 14px;
-            color: #8e8e93;
-            margin-bottom: 24px;
+            font-size: 16px;
+            color: #ccc;
         }
     </style>
 </head>
 <body>
 
     <h2>XRP G PRO TV</h2>
-    <p>Матрёшка ТВ | Плеер Telegram</p>
+    <p>Нажмите на кнопку ниже, чтобы запустить видео во встроенной шторке Telegram!</p>
 
-    <div class="player-wrapper">
-        <!-- Полноценный HTML5 плеер, защищенный от внешних блокировок сайта -->
-        <video id="video-player" controls autoplay playsinline poster="https://matreshka.tv"></video>
-    </div>
+    <!-- Используем специальный формат ссылки t.me/bg_browser_bot, которая заставляет Android открывать встроенный плеер Telegram -->
+    <a href="https://t.me" class="btn" id="watch-link">▶ СМОТРЕТЬ В TELEGRAM</a>
 
     <script>
-        // 1. Инициализация Telegram Mini App
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Разворачиваем шторку на весь экран
+        tg.expand();
 
-        // 2. Настройка обхода блокировки CORS через прокси-стриминг
-        const video = document.getElementById('video-player');
-        
-        // Берем прямую видео-трансляцию ролика, оборачивая её в CORS-прокси
-        const proxyUrl = "https://allorigins.win";
-        const videoId = "kAJg0G3gmwY"; 
-        
-        // Формируем технический HLS-адрес для вытягивания потока Матрёшки
-        const streamUrl = proxyUrl + encodeURIComponent("https://matreshka.tv" + videoId);
-
-        // Используем библиотеку HLS для сборки потока прямо внутри Mini App
-        if (Hls.isSupported()) {
-            const hls = new Hls({
-                xhrSetup: function (xhr, url) {
-                    // Маскируем заголовки, чтобы Матрёшка думала, что это обычный плеер смартфона
-                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                }
-            });
-            hls.loadSource(streamUrl);
-            hls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Резервный вариант для работы на iPhone (Safari)
-            video.src = streamUrl;
-        }
+        // Как только пользователь кликнул по кнопке, шторка Mini App закрывается, уступая место встроенному браузеру Telegram
+        document.getElementById('watch-link').addEventListener('click', function() {
+            setTimeout(() => {
+                tg.close();
+            }, 600);
+        });
     </script>
 
 </body>

@@ -12,27 +12,52 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            background-color: #ffffff;
+            background-color: #0b0b0e;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        iframe {
+        .player-container {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 16/9;
+            background-color: #000000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        /* Стандартный HTML5 плеер, одобренный Telegram */
+        video {
             width: 100%;
             height: 100%;
-            border: none;
-            display: block;
+            object-fit: contain;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <!-- Вставляем правильную и точную ссылку через https:// -->
-    <iframe src="https://odarkgwolfo.blogspot.com" allowfullscreen></iframe>
+    <div class="player-container">
+        <!-- Плеер будет читать видеофайл с именем video.mp4 из вашего репозитория -->
+        <video id="tg-player" controls autoplay playsinline>
+            <source src="video.mp4" type="video/mp4">
+            Ваш браузер не поддерживает встроенный плеер.
+        </video>
+    </div>
+    
+    <h2>XRP G PRO TV | Эксклюзивно в Telegram</h2>
 
     <script>
-        // Инициализация интерфейса Telegram
+        // Инициализируем Telegram Mini App
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Растягиваем окно Mini App на максимум
+        tg.expand(); // Разворачиваем шторку на максимум
     </script>
+
 </body>
 </html>
